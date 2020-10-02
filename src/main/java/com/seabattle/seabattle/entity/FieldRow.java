@@ -1,19 +1,22 @@
 package com.seabattle.seabattle.entity;
 
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@Builder
 @Data
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class Ship {
+public class FieldRow {
+
     private int id;
-    private int state;
-    private String x;
-    private int y;
+    private String a;
+    private String b;
+    private String c;
+    private String d;
+    private String e;
+
 
 }

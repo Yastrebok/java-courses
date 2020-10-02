@@ -1,74 +1,71 @@
 package com.seabattle.seabattle.service;
 
-import com.seabattle.seabattle.entity.Field;
+import com.seabattle.seabattle.entity.FieldRow;
+import com.seabattle.seabattle.entity.Ship;
 import com.seabattle.seabattle.entity.Statistic;
 import com.seabattle.seabattle.repository.FieldRepo;
+import com.seabattle.seabattle.repository.ShipRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.Optional;
 
 @Service
 public class ShotImpl implements Shot {
 
     @Autowired
-    private FieldRepo fieldRepo;
+    FieldRepo fieldRepo;
+
+    @Autowired
+    ShipRepo shipRepo;
 
     @Override
     public void takeShot(String x, Integer y) {
         int quantityOfShots = Statistic.getStatistic().getAmountOfShots();
         int quantityOfHits = Statistic.getStatistic().getAmountOfHits();
-        Field requiredFiled = fieldRepo.getFieldById(y);
-        Field requiredBattlefield = fieldRepo.getBattlefieldById(y);
-        if (x.toUpperCase().equals("A")) {
-            if (requiredFiled.getA().equals("ship")) {
-                requiredBattlefield.setA("Bang!");
-                quantityOfHits++;
-            } else {
-                requiredBattlefield.setA(".");
-                quantityOfShots++;
-            }
+        if (x.isEmpty()) {
+
         } else {
-            if (x.toUpperCase().equals("B")) {
-                if (requiredFiled.getB().equals("ship")) {
-                    requiredBattlefield.setA("Bang!");
-                    quantityOfHits++;
-                } else {
-                    requiredBattlefield.setA(".");
-                    quantityOfShots++;
-                }
+
+            Optional<Ship> requiredShip = shipRepo.getShipByXY(x, y);
+
+            if (requiredShip.isPresent()) {
+                quantityOfHits++;
+                requiredShip.get().setState(1);
+                shipRepo.update(requiredShip.get());
+                fieldRepo.updateBattlefield(updateFieldbyShip(x,y,"Bang!"));
             } else {
-                if (x.toUpperCase().equals("C")) {
-                    if (requiredFiled.getC().equals("ship")) {
-                        requiredBattlefield.setA("Bang!");
-                        quantityOfHits++;
-                    } else {
-                        requiredBattlefield.setA(".");
-                        quantityOfShots++;
-                    }
+                quantityOfShots++;
+                fieldRepo.updateBattlefield(updateFieldbyShip(x, y,"."));
+
+            }
+
+            Statistic.getStatistic().setAmountOfHits(quantityOfHits);
+            Statistic.getStatistic().setAmountOfShots(quantityOfShots);
+        }
+    }
+
+    private FieldRow updateFieldbyShip(String x, int y, String str) {
+        Optional<FieldRow> fieldRowById = fieldRepo.getBattlefieldById(y);
+         x = x.toUpperCase();
+        if (fieldRowById.isPresent())
+            if (x.equals("A")) {
+                fieldRowById.get().setA(str);
+            } else {
+                if (x.equals("B")) {
+                    fieldRowById.get().setB(str);
                 } else {
-                    if (x.toUpperCase().equals("D")) {
-                        if (requiredFiled.getD().equals("ship")) {
-                            requiredBattlefield.setA("Bang!");
-                            quantityOfHits++;
-                        } else {
-                            requiredBattlefield.setA(".");
-                            quantityOfShots++;
-                        }
+                    if (x.equals("C")) {
+                        fieldRowById.get().setC(str);
                     } else {
-                        if (x.toUpperCase().equals("E")) {
-                            if (requiredFiled.getE().equals("ship")) {
-                                requiredBattlefield.setA("Bang!");
-                                quantityOfHits++;
-                            } else {
-                                requiredBattlefield.setA(".");
-                                quantityOfShots++;
-                            }
+                        if (x.equals("D")) {
+                            fieldRowById.get().setD(str);
+                        } else {
+                            fieldRowById.get().setE(str);
                         }
                     }
                 }
             }
-        }
-        Statistic.getStatistic().setAmountOfHits(quantityOfHits);
-        Statistic.getStatistic().setAmountOfShots(quantityOfShots);
-        fieldRepo.updateBattlefield(requiredBattlefield);
+        return fieldRowById.get();
     }
 }
