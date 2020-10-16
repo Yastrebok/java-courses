@@ -45,7 +45,8 @@ public class controller {
     public String takeShot(@ModelAttribute("x") String x, @ModelAttribute("y") Integer y, Model model) {
         //TODO event handler nullable params
         //information windows
-
+        //check when empty attribute
+        //return prev. shot's point
         shotService.takeShot(x, y);
         return "redirect:main";
     }

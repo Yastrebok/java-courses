@@ -53,8 +53,7 @@ public class FieldRepoImpl implements FieldRepo {
   //      jdbcTemplate.execute("delete from field where id IN (1, 2, 3, 4, 5)");
         jdbcTemplate.execute("delete from battlefield where id IN (1, 2, 3, 4, 5)");
 
-//        jdbcTemplate.execute("insert into field  values (1, 0, 0, 0, 0, 0), (2, 0, 0, 0, 0, 0), " +
-//                "(3, 0, 0, 0, 0, 0), (4, 0, 0, 0, 0, 0), (5, 0, 0, 0, 0, 0)");
+
 
         jdbcTemplate.execute("insert into battlefield  values (1, '' , '', '', '', ''), (2, '', '', '', '', ''), " +
                 "(3, '', '', '', '', ''), (4, '', '', '', '', ''), (5, '', '', '', '', '')");

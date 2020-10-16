@@ -83,8 +83,6 @@ public class ShipRepoImpl implements ShipRepo {
             putShip(ship);
             it++;
         }
-
-
     }
 
     @Override

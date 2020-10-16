@@ -7,7 +7,6 @@ import com.seabattle.seabattle.repository.FieldRepo;
 import com.seabattle.seabattle.repository.ShipRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import java.util.Optional;
 
 @Service
@@ -26,46 +25,21 @@ public class ShotImpl implements Shot {
         if (x.isEmpty()) {
 
         } else {
-
             Optional<Ship> requiredShip = shipRepo.getShipByXY(x, y);
+            Optional<FieldRow> fieldRow = fieldRepo.getBattlefieldById(y);
 
             if (requiredShip.isPresent()) {
                 quantityOfHits++;
                 requiredShip.get().setState(1);
                 shipRepo.update(requiredShip.get());
-                fieldRepo.updateBattlefield(updateFieldbyShip(x,y,"Bang!"));
+                fieldRepo.updateBattlefield(Utility.updateFieldbyShip(x,y,"Bang!",fieldRow));
             } else {
                 quantityOfShots++;
-                fieldRepo.updateBattlefield(updateFieldbyShip(x, y,"."));
-
+                fieldRepo.updateBattlefield(Utility.updateFieldbyShip(x, y,".", fieldRow));
             }
 
             Statistic.getStatistic().setAmountOfHits(quantityOfHits);
             Statistic.getStatistic().setAmountOfShots(quantityOfShots);
         }
-    }
-
-    private FieldRow updateFieldbyShip(String x, int y, String str) {
-        Optional<FieldRow> fieldRowById = fieldRepo.getBattlefieldById(y);
-         x = x.toUpperCase();
-        if (fieldRowById.isPresent())
-            if (x.equals("A")) {
-                fieldRowById.get().setA(str);
-            } else {
-                if (x.equals("B")) {
-                    fieldRowById.get().setB(str);
-                } else {
-                    if (x.equals("C")) {
-                        fieldRowById.get().setC(str);
-                    } else {
-                        if (x.equals("D")) {
-                            fieldRowById.get().setD(str);
-                        } else {
-                            fieldRowById.get().setE(str);
-                        }
-                    }
-                }
-            }
-        return fieldRowById.get();
     }
 }
